@@ -12,6 +12,6 @@ import javax.persistence.Entity;
 @Setter
 public class Book extends Item{
 
-    private String artist;
+    private String author;
     private String isbn;
 }

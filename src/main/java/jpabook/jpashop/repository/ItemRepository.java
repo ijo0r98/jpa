@@ -18,6 +18,12 @@ public class ItemRepository {
             em.persist(item); //새로 생성된 아이템
         } else {
             em.merge(item); //원래 있던 아이템 -> update
+            /** merge(병합) -->지양
+             *
+             * 파라미터로 넘어온 값을 받아서 영속성 컨텍스트 생성하여 수정
+             *
+             * 파라미터의 모든 값을 받아 넘김으로 원하는 값만 수정x
+             */
         }
     }
 
