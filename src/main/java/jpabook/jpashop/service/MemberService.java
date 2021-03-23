@@ -53,4 +53,12 @@ public class MemberService {
     public Member findByOne(Long memberId) {
         return memberRepository.findOne(memberId);
     }
+
+    @Transactional
+    public void update(Long id, String name) {
+        Member member = memberRepository.findOne(id);
+        member.setName(name);
+
+        //Member을 반환하면 커맨드와 쿼리를 같이 하게됨으로 지향
+    }
 }
