@@ -19,7 +19,7 @@ public class MemberApiController {
     private final MemberService memberService;
 
     //회원가입
-    @PostMapping("api/v1/members/join")
+    @PostMapping("/api/v1/members/join")
     public CreateMemberResponse saveMemberV1(@RequestBody @Valid Member member) {
 
         Long id = memberService.join(member); //공백도 들어감 -> @NotEmpty
@@ -28,7 +28,7 @@ public class MemberApiController {
 
     //api 스펙을 위한 별도의 DTO 객체 필요함, 엔티티 외부에 노출x
 
-    @PostMapping("api/v2/members/join")
+    @PostMapping("/api/v2/members/join")
     public CreateMemberResponse saveMemberV2(@RequestBody @Valid CreateMemberRequest createMemberRequest) {
 
         Member member = new Member();
@@ -40,7 +40,7 @@ public class MemberApiController {
 
 
     //회원정보 수정
-    @PutMapping("api/v2/members/update/{id}")
+    @PutMapping("/api/v2/members/update/{id}")
     public UpdateMemberResponse saveMemberV1(@PathVariable(name = "id") Long id,
                                              @RequestBody @Valid UpdateMemberRequest updateMemberRequest) {
 
@@ -51,13 +51,13 @@ public class MemberApiController {
 
 
     //회원조회
-    @GetMapping("api/v1/members/list")
+    @GetMapping("/api/v1/members/list")
     public List<Member> listMemberV1() {
         //엔티티 직접 반환은 매우 좋지 않음
         return memberService.findMembers();
     }
 
-    @GetMapping("api/v2/members/list")
+    @GetMapping("/api/v2/members/list")
     public Result listMemberV2() {
         List<Member> findMembers = memberService.findMembers();
 
