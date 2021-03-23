@@ -79,6 +79,7 @@ public class OrderSimpleApiController {
     /**
      * * v3 *
      * fetch join으로 쿼리 하나에 해결
+     * 문제1) select절에 모든 컬럼 포함
      */
 
 
