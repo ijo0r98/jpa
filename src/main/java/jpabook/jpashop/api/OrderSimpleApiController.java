@@ -5,6 +5,8 @@ import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.OrderSimpleQueryDto;
+import jpabook.jpashop.repository.order_simpleQuery.OrderSimpleQueryRepository;
 import jpabook.jpashop.service.OrderService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 public class OrderSimpleApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderSimpleQueryRepository orderSimpleQueryRepository;
 
     @GetMapping("/api/v1/simple-orders")
     public List<Order> ordersV1() {
@@ -49,6 +52,7 @@ public class OrderSimpleApiController {
      * 문제3) 엔티티 직접 노출 -> api 스펙 관련 문제, 성능 저하
      */
 
+
     @GetMapping("/api/v2/simple-orders")
     public List<SimpleOrderDto> ordersV2() {
 
@@ -67,6 +71,7 @@ public class OrderSimpleApiController {
      * 기본으로 지연로딩, 필요한 경우 fetch join
      */
 
+
     @GetMapping("/api/v3/simple-orders")
     public List<SimpleOrderDto> ordersV3() {
 
@@ -80,6 +85,24 @@ public class OrderSimpleApiController {
      * * v3 *
      * fetch join으로 쿼리 하나에 해결
      * 문제1) select절에 모든 컬럼 포함
+     */
+
+
+    @GetMapping("/api/v4/simple-orders")
+    public List<OrderSimpleQueryDto> ordersV4() {
+
+        return orderSimpleQueryRepository.findOrderDtos();
+    }
+
+    /**
+     * * v4 *
+     * 일반적인 sql처럼 select절에 원하는 컬럼 직접 작성
+     * 성능 좀 더 최적화
+     * 문제) 레퍼지토리 재사용성이 떨어짐 -api스펙에 맞춰진 쿼리
+     * Dto로 조회하였기에 직접 변경 x
+     *
+     * v3과 v4 성능이 크게 차이나지 않음
+     * join절이나 where절에서 더 성능차이가 큼
      */
 
 
