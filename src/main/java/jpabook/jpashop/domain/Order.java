@@ -2,6 +2,8 @@ package jpabook.jpashop.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
+import org.springframework.boot.autoconfigure.batch.BatchDataSource;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

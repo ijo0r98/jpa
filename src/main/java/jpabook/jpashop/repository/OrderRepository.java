@@ -97,6 +97,7 @@ public class OrderRepository {
     /**
      * 실전 JPA 활용2
      */
+
     public List<Order> findAllWithMemberDelivery() {
         return em.createQuery(
                 "select o from Order o" +
@@ -105,5 +106,47 @@ public class OrderRepository {
         ).getResultList();
     }
 
+    /**
+     * 쿼리 한번에 해결하나 중복데이터가 많음 -데이터 전송 시간 증가, 용량 증가
+     */
+
+
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                "select distinct o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d" +
+                        " join fetch o.orderItems oi" +
+                        " join fetch oi.item i", Order.class)
+//                .setFirstResult(1)
+//                .setMaxResults(100)
+                .getResultList();
+
+        /**
+         * 주문은 2건이지만 각각 2개의 품목을 주문하였음으로 orderItem은 4개 -> 결과 4 rows
+         * 해결 -> distinct 추가
+         * 데이터베이스에서 한 줄이 모두 동일해야 distinct 됨, jpa에서 자체적으로 아이디값을 비교하여 중복되는 값 버림 (객체단에서 해결)
+         * 패치조인으로 sql 1번만 실행
+         * - 일대다
+         * 문제1) 페이징 불가 (WARN) firstResult/maxResult specified with collection fetch, applied in memory - 메모리에서 페이징 처리하게됨
+         * 문제2) 페치조인 1개만 사용 1*n*n (WARN)
+         */
+    }
+
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+    /**
+     * 쿼리가 더 나가긴 하지만 좀 더 정규화된 데이터
+     * 배치 사이즈 - in 조건으로 해결
+     *
+     * findAllWithMemberDelivery() 와 상황에 맞게 사용
+     */
 
 }
