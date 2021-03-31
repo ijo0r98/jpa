@@ -1,17 +1,13 @@
 package jpabook.jpashop.service;
 
 import jpabook.jpashop.domain.Member;
-import jpabook.jpashop.repository.MemberRepository;
-import org.junit.Assert;
+import jpabook.jpashop.repository.MemberRepositoryOld;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
 
 import static org.junit.Assert.*;
 
@@ -21,7 +17,8 @@ import static org.junit.Assert.*;
 public class MemberServiceTest {
 
     @Autowired MemberService memberService;
-    @Autowired MemberRepository memberRepository;
+    @Autowired
+    MemberRepositoryOld memberRepositoryOld;
 
 //    @Autowired EntityManager em; //db에 반영하여 쿼리문 실행하여 쿼리 확인 가능
 
@@ -37,7 +34,7 @@ public class MemberServiceTest {
 
         //then
 //        em.flush(); 쿼리는 실행되나 롤백됨
-        assertEquals(member, memberRepository.findOne(saveId));
+        assertEquals(member, memberRepositoryOld.findOne(saveId));
     }
 
     @Test(expected = IllegalStateException.class) //try-catch

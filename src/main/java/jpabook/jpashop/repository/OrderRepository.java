@@ -1,6 +1,11 @@
 package jpabook.jpashop.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.domain.OrderStatus;
+import jpabook.jpashop.domain.QMember;
+import jpabook.jpashop.domain.QOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -11,11 +16,19 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jpabook.jpashop.domain.QMember.*;
+
 @Repository
-@RequiredArgsConstructor
 public class OrderRepository {
 
     private final EntityManager em;
+    private final JPAQueryFactory query;
+
+    //querydsl 초기화
+    public OrderRepository(EntityManager em) {
+        this.em = em;
+        this.query = new JPAQueryFactory(em);
+    }
 
     //주문 저장
     public void save(Order order) {
@@ -148,5 +161,37 @@ public class OrderRepository {
      *
      * findAllWithMemberDelivery() 와 상황에 맞게 사용
      */
+
+
+    /**
+     * QueryDSL
+     */
+    public List<Order> findAll(OrderSearch orderSearch) {
+        QOrder order = QOrder.order;
+//        QMember member = QMember.member;
+
+        //jpql로 바뀌어 실행
+//        JPAQueryFactory query = new JPAQueryFactory(em);
+
+        return query.select(order)
+                .from(order)
+                .join(QMember.member, member)
+                .where(statusEx(orderSearch.getOrderStatus()), nameLike(orderSearch.getMemberName()))
+                .limit(100)
+                .fetch();
+
+        //모두 자바 코드로 오타 잡기에 좋음
+
+    }
+
+    private BooleanExpression nameLike(String memberName) {
+        if(!StringUtils.hasText(memberName)) return null;
+        return QMember.member.name.like(memberName);
+    }
+
+    private BooleanExpression statusEx(OrderStatus statusCond) {
+        if (statusCond == null) return null;
+        else return QOrder.order.status.eq(statusCond);
+    }
 
 }
