@@ -82,6 +82,10 @@ public class OrderQueryRepository {
         return result;
     }
 
+    /**
+     * v4->v5 코드는 복잡하나 성능은 좋음
+     */
+
     private Map<Long, List<OrderItemQueryDto>> findOrderItemMap(List<Long> orderIds) {
         List<OrderItemQueryDto> orderItems = em.createQuery(
                 "select new jpabook.jpashop.repository.order.query.OrderItemQueryDto(oi.order.id, i.name, oi.orderPrice, oi.count)" +
@@ -116,8 +120,14 @@ public class OrderQueryRepository {
         //OrderFlatDto -> OrderQueryDto
     }
     /**
-     * 쿼리 1번 / 데이터 중복 제거로 v5보다 느릴수도 있음
+     * 쿼리 1번 / 데이터 중복 제거로 v5보다 느릴수도 있음 ; 상황에 따라 다름
      * 애플리케이션에서 추가작업 증가
      * 페이징 x
+     */
+
+    /**
+     * 그 후의 성능최적화는 캐시 사용
+     * 엔티티는 절대 캐시x
+     * DTO를 캐시
      */
 }
